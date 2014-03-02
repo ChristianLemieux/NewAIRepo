@@ -27,11 +27,15 @@ public class ZachSteering : MonoBehaviour {
 	protected float rotVelocity;
 	protected float maxRotVelocity;
 
+	//villager height
+	protected float height;
+
 	//No infinite wandering
 	int wanderTime;
 
 	// Steer is called every frame by parent class.
 	protected void Steer () {
+
 
 		//Following overrides wander.
 		if (followTarget != null) {
@@ -50,6 +54,7 @@ public class ZachSteering : MonoBehaviour {
 			Quaternion targetRotation = Quaternion.LookRotation(target - transform.position);
 			float str = Mathf.Min (rotVelocity * Time.deltaTime,1);
 			transform.rotation = Quaternion.Lerp(transform.rotation,targetRotation,str);
+			//transform.rotation = Quaternion.AngleAxis(str,Vector3.up);
 
 			//move forwards.
 			if(arriving)//slow it up!
@@ -61,7 +66,25 @@ public class ZachSteering : MonoBehaviour {
 			{
 				transform.position += transform.forward.normalized * velocity * Time.deltaTime;
 			}
+
+			//update height
+			Vector3 updatedPos = transform.position;
+			updatedPos.y = Terrain.activeTerrain.SampleHeight(transform.position) + height;
+			transform.position = updatedPos;
+
+			//locks the rotation of gameObjects on the Y-axis, so there is no floating away
+			Quaternion currentRot = transform.rotation;
+			currentRot.x = 0.0f;
+			currentRot.z = 0.0f;
+			transform.rotation = currentRot;
 		}
+
+		if(transform.position.x <= 337.0f || transform.position.x >= 1680.0f)
+			target *= -1;
+		if(transform.position.z <= 285.0f || transform.position.z >= 1625.0f)
+			target *= -1;
+
+
 	}
 
 	protected void BeginFlee(GameObject go){
@@ -108,6 +131,11 @@ public class ZachSteering : MonoBehaviour {
 			target = Vector3.zero;
 			hasTarget = false;
 		}
+
+		if(transform.position.x <= 337.0f || transform.position.x >= 1680.0f)
+			target *= -1;
+		if(transform.position.z <= 285.0f || transform.position.z >= 1625.0f)
+			target *= -1;
 		//otherwise, movement is handled in update.
 	}
 
@@ -137,6 +165,20 @@ public class ZachSteering : MonoBehaviour {
 	protected void Follow(GameObject go)
 	{
 		followTarget = go;
+	}
+
+	protected void Delay(GameObject go)
+	{
+		float tempVel = velocity;
+
+		if(Vector3.Distance(transform.position, go.transform.position) <= 3.0f)
+		{
+			velocity /= 2;
+		}
+		else
+		{
+			velocity = tempVel;
+		}
 	}
 
 	protected void UnFollow(){

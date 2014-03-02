@@ -21,6 +21,7 @@ public class MayorController : MonoBehaviour {
 		{
 
 			Vector3 forward = transform.forward.normalized;
+			//checks to see if colliding with terrain walls
 			if(!Physics.Raycast(transform.position,forward,5,layerMask))
 			{			  
 				Vector3 pos = transform.position + forward/2;
@@ -28,6 +29,20 @@ public class MayorController : MonoBehaviour {
 			}
 
 		}
+
+		if (Input.GetKey("s")) 
+		{
+			
+			Vector3 backward = -transform.forward.normalized;
+			//checks to see if colliding with terrain walls
+			if(!Physics.Raycast(transform.position,backward,5,layerMask))
+			{			  
+				Vector3 pos = transform.position + backward/4;
+				transform.position = pos;
+			}
+			
+		}
+
 
 		//update height
 		Vector3 updatedPos = transform.position;

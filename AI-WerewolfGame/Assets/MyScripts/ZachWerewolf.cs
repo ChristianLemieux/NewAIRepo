@@ -11,10 +11,10 @@ public class ZachWerewolf : ZachSteering {
 	void Start () {
 		gameManagerGO = GameObject.FindGameObjectWithTag ("GameController");
 		zgm = gameManagerGO.GetComponent<ZachGameManager>();
-
+		height = 5.0f;
 		hasTarget = false;
 		velocity = 15;
-		rotVelocity = .4f;
+		rotVelocity = .6f;
 	}
 	
 	// Update is called once per frame
