@@ -49,12 +49,16 @@ public class ZachSteering : MonoBehaviour {
 			Flee (fleeTarget);
 		}
 
+		if (OutOfBounds ()) 
+		{
+			target = new Vector3(1000,10,1000); //center of map.
+		}
+
 		if (hasTarget) {
 			//rotate towards target
 			Quaternion targetRotation = Quaternion.LookRotation(target - transform.position);
 			float str = Mathf.Min (rotVelocity * Time.deltaTime,1);
 			transform.rotation = Quaternion.Lerp(transform.rotation,targetRotation,str);
-			//transform.rotation = Quaternion.AngleAxis(str,Vector3.up);
 
 			//move forwards.
 			if(arriving)//slow it up!
@@ -67,7 +71,7 @@ public class ZachSteering : MonoBehaviour {
 				transform.position += transform.forward.normalized * velocity * Time.deltaTime;
 			}
 
-			//update height
+			//update height - stays on top of terrain.
 			Vector3 updatedPos = transform.position;
 			updatedPos.y = Terrain.activeTerrain.SampleHeight(transform.position) + height;
 			transform.position = updatedPos;
@@ -78,13 +82,16 @@ public class ZachSteering : MonoBehaviour {
 			currentRot.z = 0.0f;
 			transform.rotation = currentRot;
 		}
+	}
 
-		if(transform.position.x <= 337.0f || transform.position.x >= 1680.0f)
-			target *= -1;
-		if(transform.position.z <= 285.0f || transform.position.z >= 1625.0f)
-			target *= -1;
+	private bool OutOfBounds()
+	{
+		if (transform.position.x <= 325f || transform.position.x >= 1680f)
+			return true;
+		if (transform.position.z <= 300f || transform.position.z >= 1630f)
+			return true;
 
-
+		return false;
 	}
 
 	protected void BeginFlee(GameObject go){
@@ -131,12 +138,6 @@ public class ZachSteering : MonoBehaviour {
 			target = Vector3.zero;
 			hasTarget = false;
 		}
-
-		if(transform.position.x <= 337.0f || transform.position.x >= 1680.0f)
-			target *= -1;
-		if(transform.position.z <= 285.0f || transform.position.z >= 1625.0f)
-			target *= -1;
-		//otherwise, movement is handled in update.
 	}
 
 	//default wander distance

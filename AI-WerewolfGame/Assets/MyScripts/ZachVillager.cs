@@ -1,15 +1,17 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class ZachVillager : ZachSteering {
 
 	GameObject gameManagerGO;
 	ZachGameManager zgm;
+	List<GameObject> nearbyVillagers;
 
 	// Use this for initialization
 	void Start () {
 		gameManagerGO = GameObject.FindGameObjectWithTag ("GameController");
 		zgm = gameManagerGO.GetComponent<ZachGameManager>();
+		nearbyVillagers = new List<GameObject> ();
 		height = 2.5f;
 		velocity = 5;
 		rotVelocity = 1;
@@ -44,19 +46,11 @@ public class ZachVillager : ZachSteering {
 			Debug.Log ("A villager found the mayor!");
 			Follow(other.gameObject);
 		}
-		else if(other.tag == "Villager") {
-			//Delay(other.gameObject);
-			Debug.Log ("collided with another villager");
-			float tempVel = velocity;
-			
-			if(Vector3.Distance(transform.position, other.transform.position) <= 5)
-			{
-				this.velocity /= 2;
-			}
-			else
-			{
-				this.velocity = tempVel;
-			}
+		else if(other.tag == "Villager")
+		{
+			//Add other villagers to "close object" list.
+			if(other.gameObject != null && nearbyVillagers != null)
+				nearbyVillagers.Add (other.gameObject);
 		}
 		else if (other.tag == "Werewolf") {
 			Debug.Log("villager better run!");
@@ -69,6 +63,10 @@ public class ZachVillager : ZachSteering {
 			UnFollow ();
 		} else if (other.tag == "Werewolf") {
 			StopFlee();
+		}
+		else if(other.tag == "Villager")
+		{
+			nearbyVillagers.Remove(other.gameObject);
 		}
 	}
 }
