@@ -13,21 +13,16 @@ public class AStar : MonoBehaviour {
 	}
 
 	public WayPoint[] GetPath(Vector3 position,Vector3 goal){
-		List<WayPoint> openList = new List<WayPoint>(); // positions that are possible to get to, but not examined yet
-		//float totalCost;
-		List<WayPoint> closedList = new List<WayPoint>();
+		List<WayPoint> path = new List<WayPoint>();
 
 		WayPoint endGoal = manager.getWayPointNear(goal);
 		WayPoint start = manager.getWayPointNear(position);
-
-		openList.Add(start);
 
 		WayPoint current = start;
 		WayPoint best;
 		WayPoint bb; // best's best
 
 		while(current != endGoal){
-
 			// find current's best
 			foreach(WayPoint.Connection c in current.otherWayPoints){
 				
@@ -39,7 +34,7 @@ public class AStar : MonoBehaviour {
 				}
 			}
 
-			/*// find best's best
+			// find best's best
 			foreach(WayPoint.Connection c in best.otherWayPoints){
 				if(bb == null){
 					bb = c.wp;
@@ -49,30 +44,15 @@ public class AStar : MonoBehaviour {
 				}
 			}
 			// check if bb is also connected to current
-			if()
-		*/
-
-			foreach(WayPoint.Connection c in best.otherWayPoints)
-			{
-				WayPoint wp = c.wp;
-				wp.distToReach = best.distToReach + c.totalDist; // add distance to reach last point to the connection 
-																							// dist between the two points.
-
-				if(openList.Exists(wp))
-				{
-
-				}
-				else if(closedList.Exists(wp)) // the value at this point has been calculated previously
-				{
-					calcTotalScore(wp, best.distToReach); //TODO
-				}
-				else//not found in open or closed list -> add to open list
-				{
-					openList.Add (wp);
+			bool shared;
+			foreach(WayPoint.Connection c in current.otherWayPoints){
+				if(c.wp.transform.position.x == bb.transform.position.x && c.wp.transform.position.z == bb.transform.position.z){
+					shared = true;
 				}
 			}
-
-			current = best;
+		
+			if(shared) current = bb; // if bb is also connected to current, pass it in as the new current instead of best
+			else current = best;
 			path.Add(current);
 		}
 		return path;
@@ -83,9 +63,4 @@ public class AStar : MonoBehaviour {
 			wp.distGoal = Vector3.Distance(goalPos, wp.transform.position);
 		}
 	}	
-
-	private float calcTotalScore(WayPoint wp, prevScore)//TODO
-	{
-		return null;
-	}
 }
