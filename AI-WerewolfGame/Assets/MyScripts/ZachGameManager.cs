@@ -20,7 +20,7 @@ public class ZachGameManager : MonoBehaviour {
 	public int numKilled;
 
 	//Waypoint stuff
-	List<WayPoint> allWayPoints;
+	public List<WayPoint> allWayPoints;
 	int layerMask = 1 << 9; // 9 = "Obstacle layer"
 
 
@@ -84,7 +84,7 @@ public class ZachGameManager : MonoBehaviour {
 		}
 	}
 
-	WayPoint getWayPointNear (Vector3 position)
+	public WayPoint getWayPointNear (Vector3 position)
 	{
 		WayPoint closest = null;
 		float closestDist = float.MaxValue;
